@@ -106,19 +106,33 @@ class ExcelHandler:
         """
         products = {}
         
-        # Start from row 2 (assuming row 1 is header)
-        for row_idx, row in self.df.iterrows():
-            # Add 2 to row_idx to match Excel row numbers (1-based indexing + header row)
-            excel_row = row_idx + 2
+        # Convert column letters to numerical indices (0-based)
+        link_col_idx = self.column_letter_to_index(link_col)
+        var1_col_idx = self.column_letter_to_index(var1_col) if var1_col else None
+        var2_col_idx = self.column_letter_to_index(var2_col) if var2_col else None
+        
+        # Get the column names from DataFrame (may be different from Excel column letters)
+        df_columns = list(self.df.columns)
+        if link_col_idx >= len(df_columns):
+            return {}  # Invalid column
+            
+        link_col_name = df_columns[link_col_idx]
+        var1_col_name = df_columns[var1_col_idx] if var1_col_idx is not None and var1_col_idx < len(df_columns) else None
+        var2_col_name = df_columns[var2_col_idx] if var2_col_idx is not None and var2_col_idx < len(df_columns) else None
+        
+        # Skip the first row (configuration row)
+        for row_idx, row in self.df.iloc[1:].iterrows():
+            # Get the actual Excel row number (add 3 because: 1-based indexing + config row + header row)
+            excel_row = row_idx + 3
             
             # Get the product link
-            link = row.get(link_col, "").strip()
-            if not link or "shopee" not in link.lower():
+            link = str(row.get(link_col_name, "")).strip()
+            if not link or "shopee" not in str(link).lower():
                 continue
             
             # Get the variations
-            var1 = row.get(var1_col, "").strip() if var1_col else ""
-            var2 = row.get(var2_col, "").strip() if var2_col else ""
+            var1 = str(row.get(var1_col_name, "")).strip() if var1_col_name else ""
+            var2 = str(row.get(var2_col_name, "")).strip() if var2_col_name else ""
             
             products[excel_row] = {
                 "link": link,
