@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Theo dõi giá sản phẩm Shopee</h4>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">File Excel chứa danh sách sản phẩm</label>
+                        <input type="file" class="form-control" id="file" name="file" required>
+                        <div class="form-text">
+                            Tải lên file Excel có cấu trúc phù hợp với các cột chứa link Shopee và thông tin phân loại sản phẩm.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="threads" class="form-label">Số luồng xử lý</label>
+                        <input type="number" class="form-control" id="threads" name="threads" value="4" min="1" max="10">
+                        <div class="form-text">
+                            Số luồng xử lý đồng thời, tăng để cải thiện tốc độ nếu đường truyền mạng tốt.
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Bắt đầu theo dõi giá</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4>Hướng dẫn sử dụng</h4>
+            </div>
+            <div class="card-body">
+                <h5>Cấu trúc file Excel</h5>
+                <ul>
+                    <li>File Excel phải có các cột chứa link sản phẩm Shopee và thông tin phân loại.</li>
+                    <li>Hàng đầu tiên trong file nên chứa thông tin cấu hình theo định dạng: <code>key1=value1;key2=value2;...</code></li>
+                    <li>Các thông số cấu hình cần thiết:
+                        <ul>
+                            <li><code>link_column</code>: Cột chứa link sản phẩm Shopee (mặc định: A)</li>
+                            <li><code>var1_column</code>: Cột chứa thông tin phân loại 1 (mặc định: B)</li>
+                            <li><code>var2_column</code>: Cột chứa thông tin phân loại 2 (mặc định: C)</li>
+                            <li><code>discount_column</code>: Cột để ghi mức giảm giá % (mặc định: D)</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h5>Kết quả</h5>
+                <ul>
+                    <li>Công cụ sẽ tự động lấy giá các sản phẩm Shopee và ghi vào một cột mới với tiêu đề là ngày hiện tại (YYYY-MM-DD).</li>
+                    <li>Cột discount_column sẽ được cập nhật với % giảm giá so với giá trung bình lịch sử.</li>
+                    <li>Sau khi xử lý, bạn có thể tải về file Excel đã được cập nhật.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

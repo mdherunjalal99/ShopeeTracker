@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header">
+                <h4>Trạng thái xử lý</h4>
+            </div>
+            <div class="card-body">
+                {% if job.status == 'running' %}
+                    <div class="alert alert-info">
+                        Đang xử lý... Vui lòng đợi!
+                    </div>
+                    
+                    <div class="progress mb-3">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             style="width: {{ (job.progress / job.total) * 100 if job.total > 0 else 0 }}%">
+                            {{ job.progress }} / {{ job.total }}
+                        </div>
+                    </div>
+                    
+                    <p>Đã xử lý {{ job.progress }} / {{ job.total }} sản phẩm</p>
+                    
+                    <script>
+                        // Auto refresh page every 3 seconds
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 3000);
+                    </script>
+                {% elif job.status == 'completed' %}
+                    <div class="alert alert-success">
+                        Xử lý đã hoàn tất!
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('download_file', job_id=session.get('job_id')) }}" 
+                           class="btn btn-primary">
+                            Tải về file Excel đã cập nhật
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            Trở về trang chủ
+                        </a>
+                    </div>
+                {% elif job.status == 'error' %}
+                    <div class="alert alert-danger">
+                        Có lỗi xảy ra: {{ job.error }}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            Trở về trang chủ
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if job.results %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4>Kết quả hiện tại</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Link</th>
+                                <th>Phân loại 1</th>
+                                <th>Phân loại 2</th>
+                                <th>Giá (VND)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in range(job.results|length) %}
+                            <tr>
+                                <td>{{ i + 1 }}</td>
+                                <td>
+                                    <a href="{{ job.results[i].link }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px;">
+                                        {{ job.results[i].link }}
+                                    </a>
+                                </td>
+                                <td>{{ job.results[i].var1 }}</td>
+                                <td>{{ job.results[i].var2 }}</td>
+                                <td>{{ "{:,.0f}".format(job.results[i].price) if job.results[i].price else "N/A" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
