@@ -7,13 +7,14 @@ the Shopee Price Tracker application.
 
 import pandas as pd
 from datetime import datetime, timedelta
+import os
 
 # Create DataFrame with column headers
 today = datetime.now().strftime("%Y-%m-%d")
 yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 day_before = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
 
-# Sample product data
+# Sample product data - đây là dữ liệu mẫu, khi sử dụng thực tế, hãy thay thế bằng các URL sản phẩm thực trên Shopee
 products = [
     [
         "https://shopee.vn/iPhone-14-Pro-Max-128GB-Ch%C3%ADnh-h%C3%A3ng-VN-A-i.88201679.18932132659",
@@ -59,6 +60,44 @@ products = [
         "",
         10500000,
         10600000,
+    ],
+    # Thêm các sản phẩm điện thoại
+    [
+        "https://shopee.vn/Samsung-Galaxy-S24-Ultra-12GB-256GB-i.88201679.23626487486",
+        "Đen",
+        "256GB",
+        "",
+        "",
+        28990000,
+        29500000,
+    ],
+    [
+        "https://shopee.vn/Google-Pixel-8-Pro-128GB-Ch%C3%ADnh-H%C3%A3ng-i.88201679.23548769421",
+        "Xanh",
+        "128GB",
+        "",
+        "",
+        21490000,
+        21990000,
+    ],
+    # Thêm các sản phẩm laptop
+    [
+        "https://shopee.vn/Laptop-Dell-XPS-13-Plus-9320-i7-1260P-16GB-512GB-Windows-11-i.88201679.21845126497",
+        "",
+        "512GB",
+        "",
+        "",
+        38990000,
+        39900000,
+    ],
+    [
+        "https://shopee.vn/Laptop-Gaming-Asus-ROG-Strix-G16-G614JV-N4086W-i7-13650HX-16GB-512GB-RTX-4060-Windows-11-i.88201679.22274851269",
+        "",
+        "",
+        "",
+        "",
+        39490000,
+        39990000,
     ],
 ]
 
