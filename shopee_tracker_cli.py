@@ -143,4 +143,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit:
+        # If no arguments are provided, show help and exit normally
+        pass
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
