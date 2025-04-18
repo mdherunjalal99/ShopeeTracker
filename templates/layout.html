@@ -21,6 +21,22 @@
             border-top: 1px solid var(--bs-border-color);
             margin-top: 2rem;
         }
+        /* Auth form styling */
+        .auth-form {
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 2rem;
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0.5rem;
+        }
+        .auth-form .form-control {
+            margin-bottom: 1rem;
+        }
+        .auth-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -33,6 +49,21 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('index') }}">Trang chủ</a>
                         </li>
+                        {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.profile') }}">Tài khoản</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.logout') }}">Đăng xuất</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">Đăng nhập</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.register') }}">Đăng ký</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </nav>
             </div>

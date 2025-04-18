@@ -53,9 +53,14 @@ from auth import auth, login_manager
 login_manager.init_app(app)
 app.register_blueprint(auth, url_prefix='/auth')
 
-# Create tables if they don't exist
+# Create tables if they don't exist (safely)
 with app.app_context():
-    db.create_all()
+    try:
+        db.create_all()
+        logger.info("Database tables created successfully")
+    except Exception as e:
+        logger.warning(f"Could not create tables (they might already exist): {e}")
+        # Continue execution even if tables creation fails
 
 # Configure upload folder
 UPLOAD_FOLDER = Path(tempfile.gettempdir()) / "shopee_tracker_uploads"
