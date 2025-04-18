@@ -14,10 +14,11 @@ from pathlib import Path
 
 try:
     from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
+    from flask_login import LoginManager, login_required, current_user
     from werkzeug.utils import secure_filename
 except ImportError:
     import sys
-    print("Flask and Werkzeug are required. Install them using 'pip install flask werkzeug'")
+    print("Flask, Flask-Login and Werkzeug are required. Install them using 'pip install flask flask-login werkzeug'")
     sys.exit(1)
 
 from excel_handler import ExcelHandler
@@ -34,6 +35,27 @@ logger = logging.getLogger(__name__)
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "shopee_tracker_secret_key")
+
+# Configure SQLAlchemy
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_recycle": 300,
+    "pool_pre_ping": True,
+}
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# Initialize database
+from models import db, User, ProductList, Product, PriceHistory, JobStatus
+db.init_app(app)
+
+# Initialize Flask-Login and auth blueprint
+from auth import auth, login_manager
+login_manager.init_app(app)
+app.register_blueprint(auth, url_prefix='/auth')
+
+# Create tables if they don't exist
+with app.app_context():
+    db.create_all()
 
 # Configure upload folder
 UPLOAD_FOLDER = Path(tempfile.gettempdir()) / "shopee_tracker_uploads"
